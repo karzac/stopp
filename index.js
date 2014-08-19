@@ -38,9 +38,10 @@ if(process.env["_system_name"] !== 'OSX'){
 }
 
 
-var yargs = require("yargs")
-  , conf  = require("./conf.js")
-  , fs    = require("fs")
+var yargs   = require("yargs")
+  , conf    = require("./conf.js")
+  , fs      = require("fs")
+  , fs_sync = require("fs-sync")
 
 /**
  * Stopp Class
@@ -51,10 +52,20 @@ var yargs = require("yargs")
 function Stopp(argv){
     var that = this
     
-    // Private methods
+    // ************** Private methods ************** //
+    
+    /**
+     * Parse the system's hosts file for Stopp rules
+     * 
+     * @param  {Function} callback  Callback function, params: (error, data)
+     */
     var parseHosts = function(callback) {
         fs.readFile('/private/etc/hosts', 'utf8', function(err, data) {
             
+            if(err) {
+                callback(err)
+                return
+            }
 
             var lines = data.split('\n')
               , foundStartBanner = false
@@ -85,15 +96,23 @@ function Stopp(argv){
 
                 } else if(lines[i] === conf.startBanner) {
                     foundStartBanner = true
+
                 }
             }
-
-            //console.dir(entries)
             
             callback(false, entries)
 
         })
-        
+    }
+
+    /**
+     * Backs up the hosts file to ./bak/hosts-[unix_timestamp].bak
+     * @return {string} Path and name of the backup
+     */
+    var backupHostsSync = function(){
+        var filepath = process.env.PWD + '/backups/hosts-' + new Date().getTime() + '.bak'
+        fs_sync.copy('/private/etc/hosts', filepath)
+        return filepath
     }()
 
 
