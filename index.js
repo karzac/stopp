@@ -40,8 +40,8 @@ if(process.env["_system_name"] !== 'OSX'){
 
 var yargs = require("yargs")
   , conf  = require("./conf.js")
-
-
+  , fs    = require("fs")
+  , lazy  = require("lazy")
 
 /**
  * Stopp Class
@@ -51,6 +51,52 @@ var yargs = require("yargs")
  */   
 function Stopp(argv){
     var that = this
+    
+    // Private methods
+    var parseHosts = function(callback) {
+        fs.readFile('/private/etc/hosts', 'utf8', function(err, data) {
+            
+
+            var lines = data.split('\n')
+              , foundStartBanner = false
+              , entries = []
+            
+            for(var i = 0; i < lines.length; i++){
+                if(foundStartBanner === true && lines[i] !== ''){
+                    if(lines[i] === conf.endBanner) break
+                
+                    var l = lines[i].trim()
+                      , entry = {}
+                    
+                    if(l[0] === '#'){
+                        entry.enabled = false
+                        l = l.slice(1)
+                    } else {
+                        entry.enabled = true
+                    }
+
+                    l = l.replace(/\s+/g, " ").split(" ")
+
+                    if(l.length !== 2) continue
+                
+                    entry.ip = l[0]
+                    entry.address = l[1]
+
+                    entries.push(entry)
+
+                } else if(lines[i] === conf.startBanner) {
+                    foundStartBanner = true
+                }
+            }
+
+            //console.dir(entries)
+            
+            callback(false, entries)
+
+        })
+        
+    }()
+
 
     if(argv.length > 0 && typeof this[argv[0]] === 'function' && this[argv[0]].callable === true){
         return this[argv[0]](argv.splice(1))      
@@ -66,13 +112,13 @@ function Stopp(argv){
  * Displays usage information
  */
 Stopp.prototype.help = function() {
-    this.callable = true
     conf.help.forEach(function(ele) {
         console.log(ele)
     })
     
     return 0
 }
+Stopp.prototype.help.callable = true
 
 /**
  * On Method
@@ -81,10 +127,11 @@ Stopp.prototype.help = function() {
  *
  */
 Stopp.prototype.on = function() {
-    this.callable = true
     console.log("You called the 'on' method.")
 
 
 }
+Stopp.prototype.on.callable = true
+
 
 return new Stopp(yargs.argv._)

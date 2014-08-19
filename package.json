@@ -7,7 +7,13 @@
     "type": "git",
     "url": "https://github.com/dav-/stopp.git"
   },
-  "keywords": ["stopp", "procrastinate", "procrastination", "procrastinating", "stop"],
+  "keywords": [
+    "stopp",
+    "procrastinate",
+    "procrastination",
+    "procrastinating",
+    "stop"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,6 +21,7 @@
   "author": "Derrick Cohodas",
   "license": "MIT",
   "dependencies": {
+    "lazy": "^1.0.11",
     "yargs": "^1.3.1"
   }
 }

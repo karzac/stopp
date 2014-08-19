@@ -21,6 +21,8 @@ module.exports = {
           , "add [addresses]     Add specified address(es) to filter. IP or URL, do not include http(s)" 
           , "del [addresses]     Remove specified address(es) from filter"
           ]
+  , startBanner: "#### START STOPP CONFIGURATION - DO NOT MODIFY THIS LINE OR BELOW ####"
+  , endBanner: "#### END STOPP CONFIGURATION - DO NOT MODIFY THIS LINE OR ABOVE ####"
  
 
 }
