@@ -53,13 +53,26 @@ function Stopp(argv){
     var that = this
     
     // ************** Private methods ************** //
-    
+
+    /**
+     * Backs up the hosts file to ./bak/hosts-[unix_timestamp].bak. This function is synchronous.
+     * @return {string} Path and name of the backup
+     */
+    var backupHostsSync = function(){
+        var filepath = process.env.PWD + '/backups/hosts-' + new Date().getTime() + '.bak'
+        fs_sync.copy('/private/etc/hosts', filepath)
+        return filepath
+    }
+
+
+    // ************** Priviliged methods ************** //
+
     /**
      * Parse the system's hosts file for Stopp rules
      * 
      * @param  {Function} callback  Callback function, params: (error, data)
      */
-    var parseHosts = function(callback) {
+    this.parseHosts = function(callback) {
         fs.readFile('/private/etc/hosts', 'utf8', function(err, data) {
             
             if(err) {
@@ -96,7 +109,6 @@ function Stopp(argv){
 
                 } else if(lines[i] === conf.startBanner) {
                     foundStartBanner = true
-
                 }
             }
             
@@ -104,16 +116,6 @@ function Stopp(argv){
 
         })
     }
-
-    /**
-     * Backs up the hosts file to ./bak/hosts-[unix_timestamp].bak
-     * @return {string} Path and name of the backup
-     */
-    var backupHostsSync = function(){
-        var filepath = process.env.PWD + '/backups/hosts-' + new Date().getTime() + '.bak'
-        fs_sync.copy('/private/etc/hosts', filepath)
-        return filepath
-    }()
 
 
     if(argv.length > 0 && typeof this[argv[0]] === 'function' && this[argv[0]].callable === true){
@@ -151,5 +153,16 @@ Stopp.prototype.on = function() {
 }
 Stopp.prototype.on.callable = true
 
+Stopp.prototype.status = function() {
+    this.parseHosts(function(err, data){
+        console.dir(data)
+        if(data.length > 0 && data[0].enabled === true){
+            console.log("Stopp is ON.")
+        }else{
+            console.log("Stopp is OFF.")
+        }
+    })
+}
+Stopp.prototype.status.callable = true
 
 return new Stopp(yargs.argv._)
