@@ -13,16 +13,16 @@ Author(s) assume no responsibility or liability for any damages that may occur a
 
 ###Usage
 `stopp <command> [args]`  
-Example: stopp add reddit.com
+Example: `stopp add reddit.com`
 
 ####Commands:
-`help                Show help menu`  
-`on                  Turn the filter on`  
-`off                 Turn the filter off`  
-`status              Show the filter status`  
-`list                List all filtered addresses`  
-`add [addresses]     Add specified address(es) to filter. IP or URL, do not include http(s)`  
-`del [addresses]     Remove specified address(es) from filter`  
+`help - Show help menu`  
+`on - Turn the filter on`  
+`off - Turn the filter off`  
+`status - Show the filter status`  
+`list - List all filtered addresses`  
+`add [addresses] - Add specified address(es) to filter. IP or URL, do not include http(s)`  
+`del [addresses] - Remove specified address(es) from filter`  
 
 ###Contributing
 Feel free to submit pull requests. Please adhere to the [NPM coding style](https://www.npmjs.org/doc/misc/npm-coding-style.html).
