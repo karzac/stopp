@@ -28,6 +28,15 @@
  * 
  */
 
+// This application is currently OSX-only. 
+// Feel free to submit a pull request with support for other OSes,
+// but until then it will die on any other OS
+
+if(process.env["_system_name"] !== 'OSX'){
+    console.log("Sorry, your OS is unsupported. Feel free to submit a pull request :)")
+    return 1
+}
+
 
 var yargs = require("yargs")
   , conf  = require("./conf.js")
@@ -41,10 +50,14 @@ var yargs = require("yargs")
  * @return  int           0 on success, >1 on error
  */   
 function Stopp(argv){
-    if(argv.length == 0 || argv[0] == 'help'){
-        this.help();
-        return 0;
-    } 
+    var that = this
+
+    if(argv.length > 0 && typeof this[argv[0]] === 'function'){
+        return this[argv[0]](argv.splice(1))      
+    } else {
+        if(argv.length > 0) console.log("Invalid option: " + argv[0]) 
+        this.help()
+    }
 }
 
 /**
@@ -52,12 +65,26 @@ function Stopp(argv){
  * 
  * Displays usage information
  */
-Stopp.prototype.help = function(){
+Stopp.prototype.help = function() {
 
-    conf.help.forEach(function(ele){
-        console.log(ele);
-    });
+    conf.help.forEach(function(ele) {
+        console.log(ele)
+    })
+    
+    return 0
+}
+
+/**
+ * On Method
+ * 
+ * Turn filter ON
+ *
+ */
+Stopp.prototype.on = function() {
+
+    console.log("You called the 'on' method.")
+
 
 }
 
-var s = new Stopp(yargs.argv._);
+var s = new Stopp(yargs.argv._)
