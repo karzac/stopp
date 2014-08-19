@@ -41,7 +41,6 @@ if(process.env["_system_name"] !== 'OSX'){
 var yargs = require("yargs")
   , conf  = require("./conf.js")
   , fs    = require("fs")
-  , lazy  = require("lazy")
 
 /**
  * Stopp Class
