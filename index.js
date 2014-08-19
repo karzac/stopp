@@ -52,7 +52,7 @@ var yargs = require("yargs")
 function Stopp(argv){
     var that = this
 
-    if(argv.length > 0 && typeof this[argv[0]] === 'function'){
+    if(argv.length > 0 && typeof this[argv[0]] === 'function' && this[argv[0]].callable === true){
         return this[argv[0]](argv.splice(1))      
     } else {
         if(argv.length > 0) console.log("Invalid option: " + argv[0]) 
@@ -66,7 +66,7 @@ function Stopp(argv){
  * Displays usage information
  */
 Stopp.prototype.help = function() {
-
+    this.callable = true
     conf.help.forEach(function(ele) {
         console.log(ele)
     })
@@ -81,10 +81,10 @@ Stopp.prototype.help = function() {
  *
  */
 Stopp.prototype.on = function() {
-
+    this.callable = true
     console.log("You called the 'on' method.")
 
 
 }
 
-var s = new Stopp(yargs.argv._)
+return new Stopp(yargs.argv._)
