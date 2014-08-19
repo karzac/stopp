@@ -21,7 +21,6 @@
   "author": "Derrick Cohodas",
   "license": "MIT",
   "dependencies": {
-    "lazy": "^1.0.11",
     "yargs": "^1.3.1"
   }
 }
