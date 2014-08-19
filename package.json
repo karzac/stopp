@@ -1,12 +1,18 @@
 {
   "name": "stopp",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Stop Procrastinating: Command-line utility to block and unblock time-wasting sites.",
+  "homepage": "https://github.com/dav-/stopp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dav-/stopp.git"
+  },
+  "keywords": ["stopp", "procrastinate", "procrastination", "procrastinating", "stop"],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Derrick Cohodas",
   "license": "MIT",
   "dependencies": {
     "yargs": "^1.3.1"
