@@ -89,17 +89,11 @@ function Stopp(argv){
             var backup = backupHostsSync()
             console.log("Backup saved to ".yellow, backup.yellow.underline)
         }
-
-        // var orig = fs_sync.read(process.env.PWD + '/hosts')
-        //   , head = orig.slice(0, orig.indexOf(conf.startBanner))
-        //   , body = orig.slice(orig.indexOf(conf.startBanner), orig.indexOf(conf.endBanner) + conf.endBanner.length)
-        //   , tail = orig.slice(orig.indexOf(conf.endBanner) + conf.endBanner.length)
-        
         var rawData = ''
 
         for(var i = 0; i < data.entries.length; i++) {
             var txt = data.enabled === true ? '' : '#'
-            txt += conf.rerouteIP + ' ' + data[i] +'\n'
+            txt += conf.rerouteIP + ' ' + data.entries[i] +'\n'
             rawData += txt
         }
 
@@ -170,7 +164,7 @@ function Stopp(argv){
             if(entry === '') continue
             
             if(entry[0] === '#'){
-                entry = entry.slice(1) 
+                entry = entry.slice(1).trim()
             } else {
                 data.enabled = true  // If even one entry is enabled, we'll consider the entire filter to be "ON" (There shouldn't usually be a mixture of enabled/disabled entries)
             }
@@ -186,7 +180,9 @@ function Stopp(argv){
         return data
     }
 
-    
+    this.saveHosts = function(data) {
+        writeHostsFileSync(data)
+    }
 
 
     if(argv.length > 0 && typeof this[argv[0]] === 'function' && this[argv[0]].callable === true){
@@ -231,6 +227,15 @@ Stopp.prototype.on = function() {
         return
     }
 
+    console.log("\nStopp: Enabling filter...\n".cyan)
+
+    rules.enabled = true
+
+    this.saveHosts(rules)
+
+    console.log("\nStopp: Successfully enabled filter. ".cyan+"(Allow up to several minutes for the changes to take effect, and/or flush your system & browser DNS caches)")
+    this.status()
+
 }
 Stopp.prototype.on.callable = true
 
@@ -251,6 +256,15 @@ Stopp.prototype.off = function() {
         console.log("\nStopp: Error: Stopp is already ".red+"OFF\n".red.underline)
         return
     }
+
+    console.log("\nStopp: Disabling filter...\n".cyan)
+
+    rules.enabled = false
+
+    this.saveHosts(rules)
+
+    console.log("\nStopp: Successfully disabled filter. ".cyan+"(Allow up to several minutes for the changes to take effect, and/or flush your system & browser DNS caches)")
+    this.status()
 }
 Stopp.prototype.off.callable = true
 
@@ -259,9 +273,9 @@ Stopp.prototype.status = function() {
     var rules = this.parseHostsSync()
 
     if(rules.enabled === true){
-        console.log("\nStopp is ".yellow+"ON\n".green.underline)
+        console.log("\nStopp status: ".yellow+"ON\n".green.underline)
     } else {
-        console.log("\nStopp is ".yellow+"OFF\n".red.underline)
+        console.log("\nStopp status: ".yellow+"OFF\n".red.underline)
     }
 }
 Stopp.prototype.status.callable = true
@@ -270,11 +284,7 @@ Stopp.prototype.list = function() {
     
     var rules = this.parseHostsSync()
 
-    if(rules.enabled === true){
-        console.log("\nStopp status: ".yellow+"ON\n".green.underline)
-    } else {
-        console.log("\nStopp status: ".yellow+"OFF\n".red.underline)
-    }
+    this.status()
 
     if(rules.entries.length > 0){
         console.log("Rules:".yellow)
@@ -289,10 +299,28 @@ Stopp.prototype.list = function() {
 Stopp.prototype.list.callable = true
 
 Stopp.prototype.add = function(domains) {
-    
-    var rules = this.parseHostsSync()
 
-    console.dir(rules)
+    var rules   = this.parseHostsSync()
+      , success = 0
+
+    for(var i = 0; i < domains.length; i++) {
+        if(domains[i] && rules.entries.indexOf(domains[i]) === -1){
+            rules.entries.push(domains[i])
+            success++
+        }
+    }
+
+    if(!success){
+        console.log("\nStopp: add: error: Please specify at least one valid domain.\n".red)
+        return
+    }
+
+    this.saveHosts(rules)
+    console.log("\nStopp: Successfully added ".cyan+success.toString().green+" domains to filter. (Allow up to several minutes for the changes to take effect, and/or flush your system & browser DNS caches)".cyan)
+
+
+
+    // console.log(rules)
 }
 Stopp.prototype.add.callable = true
 

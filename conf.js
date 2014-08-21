@@ -11,8 +11,8 @@ module.exports = {
 
   , help: [ // Each array element will be printed on its own line
             ""
-          , ("Stopp: Stop Procrastination. (v" + pkg.version + ")").cyan
-          , "Copyright (c) 2014 Derrick Cohodas, All Rights Reserved. See "+"https://github.com/dav-/stopp/LICENSE.md".underline+" for license information."
+          , ("Stopp: Stop Procrastination. (v" + pkg.version + ") - "+pkg.homepage).cyan
+          , "Copyright (c) 2014 Derrick Cohodas, All Rights Reserved. See "+(pkg.homepage+"/LICENSE.md").underline+" for license information."
           , ""
           , "WARNING: Use at your own risk. This program modifies the HOSTS file on your system.".red
           , "Author(s) assume no responsibility or liability for any damages that may occur as a result, direct or indirect, of the use of this software."
