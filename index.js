@@ -85,9 +85,9 @@ function Stopp(argv){
     var writeHostsFileSync = function(data) {
 
         if(conf.backups === true){
-            console.log("Backing up hosts file...".yellow)
-            var backup = backupHostsSync()
-            console.log("Backup saved to ".yellow, backup.yellow.underline)
+            // console.log("Backing up hosts file...".yellow)
+            // var backup = backupHostsSync()
+            // console.log("Backup saved to ".yellow, backup.yellow.underline)
         }
         var rawData = ''
 

@@ -1,6 +1,6 @@
 {
   "name": "stopp",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Stop Procrastinating: Command-line utility to block and unblock time-wasting sites.",
   "homepage": "https://github.com/dav-/stopp",
   "repository": {

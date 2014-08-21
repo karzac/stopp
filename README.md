@@ -18,9 +18,9 @@ You should note that when adding domains to the filter, subdomains are always tr
 as seperate domains. For example, adding `reddit.com` will not block `www.reddit.com`.
 This is just how the `hosts` file works. 
 
-Additionally, this application makes a backup of your `hosts` file each time it is
+~~Additionally, this application makes a backup of your `hosts` file each time it is
 modified, and stores it in ./backups/, so if anything goes horribly wrong, you
-should probably be able to recover.
+should probably be able to recover.~~ See [issue 1](https://github.com/dav-/stopp/issues/1).
 
 Some planned (if I get around to it, or someone submits a pull request) features 
 include: 
