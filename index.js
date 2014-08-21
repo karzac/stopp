@@ -71,9 +71,9 @@ function Stopp(argv){
      * @return {string} Path and name of the backup
      */
     var backupHostsSync = function() {
-        var filepath = conf.backupDir + 'hosts-' + new Date().toString().split(' ').slice(0,5).join('-').replace(/\:/g, '.') + '.bak'
-        fs_sync.copy(conf.hostsLocation, filepath)
-        return filepath
+        // var filepath = conf.backupDir + 'hosts-' + new Date().toString().split(' ').slice(0,5).join('-').replace(/\:/g, '.') + '.bak'
+        // fs_sync.copy(conf.hostsLocation, filepath)
+        // return filepath
     }
 
     /**
