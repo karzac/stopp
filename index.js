@@ -39,7 +39,7 @@
  */
 
 
-if(process.env["_system_name"] !== 'OSX'){
+if(require("os").type() !== 'Darwin'){
     console.log("Sorry, your OS is unsupported. Feel free to submit a pull request :)")
     return 1
 }
