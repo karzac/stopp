@@ -14,7 +14,7 @@ commands. You may have to wait up to 5 minutes when enabling Stopp for your DNS
 cache(s) to update, but turning it off is usually instant (try doing a hard refresh
 in your browser — command + shift + r in Chrome — if it doesn't update right away).
 
-You should note that when adding domains to the filter, subdomains are always
+You should note that when adding domains to the filter, subdomains are always treated
 as seperate domains. For example, adding `reddit.com` will not block `www.reddit.com`.
 This is just how the `hosts` file works. 
 
@@ -24,7 +24,7 @@ should probably be able to recover.
 
 Some planned (if I get around to it, or someone submits a pull request) features 
 include: 
-* Optionally set a timer for the filter, so that you can't turn it off until the timer expires
+* Optionally set a timer for the filter, sgo that you can't turn it off until the timer expires
 * Import and export filter lists as JSON
 * Include default filter lists full of common time-wasting sites for easy plug-n-play
 * Automatically detect subdomains and offer to add them to the filter (e.g. if you enter `reddit.com`, the script will offer to add `www.reddit.com`, `np.reddit.com`, etc.)
