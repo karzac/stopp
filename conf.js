@@ -5,7 +5,7 @@ module.exports = {
     startBanner: "#### START STOPP CONFIGURATION - DO NOT MODIFY THIS LINE OR BELOW ####"
   , endBanner: "#### END STOPP CONFIGURATION - DO NOT MODIFY THIS LINE OR ABOVE ####"
   , backups: true
-  , backupDir: process.env.PWD + '/backups/'
+  , backupDir: __dirname + '/backups/'
   , rerouteIP: '0.0.0.0'
   , hostsLocation: '/private/etc/hosts'
 
