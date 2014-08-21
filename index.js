@@ -71,7 +71,7 @@ function Stopp(argv){
      * @return {string} Path and name of the backup
      */
     var backupHostsSync = function() {
-        var filepath = conf.backupDir + '/hosts-' + new Date().toString().split(' ').slice(0,5).join('-').replace(/\:/g, '.') + '.bak'
+        var filepath = conf.backupDir + 'hosts-' + new Date().toString().split(' ').slice(0,5).join('-').replace(/\:/g, '.') + '.bak'
         fs_sync.copy(conf.hostsLocation, filepath)
         return filepath
     }
@@ -263,7 +263,7 @@ Stopp.prototype.off = function() {
 
     this.saveHosts(rules)
 
-    console.log("\nStopp: Successfully disabled filter. ".cyan+"(Allow up to several minutes for the changes to take effect, and/or flush your system & browser DNS caches)")
+    console.log("\nStopp: Successfully disabled filter.".cyan+"\n(Allow up to several minutes for the changes to take effect, and/or flush your system & browser DNS caches)")
     this.status()
 }
 Stopp.prototype.off.callable = true
@@ -299,29 +299,124 @@ Stopp.prototype.list = function() {
 Stopp.prototype.list.callable = true
 
 Stopp.prototype.add = function(domains) {
+    if(domains.length === 0){
+        console.log("Error: Please specify at least one valid, unique domain. \n".red)
+        return
+    }
+
+    console.log("\nStopp: Attempting to add ".cyan+domains.length.toString().green+" domain(s) to filter...\n".cyan)
 
     var rules   = this.parseHostsSync()
-      , success = 0
+      , success = []
+      , failure = []
 
     for(var i = 0; i < domains.length; i++) {
         if(domains[i] && rules.entries.indexOf(domains[i]) === -1){
             rules.entries.push(domains[i])
-            success++
+            success.push(domains[i])
+        }else{
+            failure.push(domains[i])
         }
     }
 
-    if(!success){
-        console.log("\nStopp: add: error: Please specify at least one valid domain.\n".red)
+
+    if(success.length > 0){
+        
+        this.saveHosts(rules)
+        
+        console.log("\nStopp: Successfully added ".cyan+success.length.toString().green+" of ".cyan+domains.length.toString().yellow+" domain(s) to filter:".cyan)
+        for(var i = 0; i < success.length; i++){
+            console.log('\t' + success[i].cyan)
+        }
+        console.log("\n(Allow up to several minutes for the changes to take effect, and/or flush your system & browser DNS caches)")
+    }
+    if(failure.length > 0){
+        console.log("\nThe following domains were not added:".yellow)
+        for(var i = 0; i < failure.length; i++){
+            console.log('\t' + failure[i].red)
+        }
+    }
+
+    this.status()
+
+}
+Stopp.prototype.add.callable = true
+
+Stopp.prototype.del = function(domains) {
+    if(domains.length === 0){
+        console.log("Error: Please specify at least one valid, unique domain. \n".red)
         return
     }
 
-    this.saveHosts(rules)
-    console.log("\nStopp: Successfully added ".cyan+success.toString().green+" domains to filter. (Allow up to several minutes for the changes to take effect, and/or flush your system & browser DNS caches)".cyan)
+    console.log("\nStopp: Attempting to remove ".cyan+domains.length.toString().green+" domain(s) from the filter...\n".cyan)
+
+    var rules   = this.parseHostsSync()
+      , success = []
+      , failure = []
+
+    for(var i = 0; i < domains.length; i++) {
+        var index = rules.entries.indexOf(domains[i])
+        if(domains[i] && index > -1){
+            rules.entries.splice(index, 1)
+            success.push(domains[i])
+        }else{
+            failure.push(domains[i])
+        }
+    }
 
 
+    if(success.length > 0){
+        
+        this.saveHosts(rules)
+        
+        console.log("\nStopp: Successfully removed ".cyan+success.length.toString().green+" of ".cyan+domains.length.toString().yellow+" domain(s) from the filter:".cyan)
+        for(var i = 0; i < success.length; i++){
+            console.log('\t' + success[i].cyan)
+        }
+        console.log("\n(Allow up to several minutes for the changes to take effect, and/or flush your system & browser DNS caches)")
+    }
+    if(failure.length > 0){
+        console.log("\nThe following domains were not removed:".yellow)
+        for(var i = 0; i < failure.length; i++){
+            console.log('\t' + failure[i].red)
+        }
+    }
 
-    // console.log(rules)
+    this.status()
 }
-Stopp.prototype.add.callable = true
+
+/****** Aliases ******/
+
+// ADD
+
+Stopp.prototype.new = function(data) {this.add(data)}
+Stopp.prototype.new.callable = true
+
+Stopp.prototype.insert = function(data) {this.add(data)}
+Stopp.prototype.insert.callable = true
+
+Stopp.prototype.create = function(data) {this.add(data)}
+Stopp.prototype.create.callable = true
+
+// DEL
+
+Stopp.prototype.delete = function(data) {this.del(data)}
+Stopp.prototype.delete.callable = true
+
+Stopp.prototype.remove = function(data) {this.del(data)}
+Stopp.prototype.remove.callable = true
+
+Stopp.prototype.murder = function(data) {this.del(data)} //because why not
+Stopp.prototype.murder.callable = true
+
+// ON
+
+Stopp.prototype.enable = function() {this.on()}
+Stopp.prototype.enable.callable = true
+
+// OFF
+
+Stopp.prototype.disable = function() {this.off()}
+Stopp.prototype.disable.callable = true
 
 return new Stopp(yargs.argv._)

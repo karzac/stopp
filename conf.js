@@ -7,7 +7,7 @@ module.exports = {
   , backups: true
   , backupDir: process.env.PWD + '/backups/'
   , rerouteIP: '0.0.0.0'
-  , hostsLocation: process.env.PWD + '/hosts' //'/private/etc/hosts'
+  , hostsLocation: '/private/etc/hosts'
 
   , help: [ // Each array element will be printed on its own line
             ""
