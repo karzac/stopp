@@ -1,23 +1,23 @@
 #!/usr/bin/env node
 /**
  * Stopp: Stop Procrastinating
- * 
+ *
  * Github: https://github.com/dav-/stopp
  *
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 Derrick Cohodas
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,13 +29,13 @@
  * --
  *
  * Notes:
- * 
+ *
  *  + This code is all synchronous, as there is no real performance benefiet
  *    to async in this use case
- *    
+ *
  *  + This application is currently OSX-only. Feel free to submit a pull request
  *    with support for other OSes, but until then it will die on any other OS
- * 
+ *
  */
 
 
@@ -52,18 +52,18 @@ var conf    = require("./conf.js")
   , fs_sync = require("fs-sync")
   , colors  = require("colors")
 
-// Don't allow this package to be required 
+// Don't allow this package to be required
 module.exports = new Error("The package 'stopp' cannot be required. This is a global-only command line utility. See " + pkg.homepage + " for usage information.")
 
 /**
  * Stopp Class
- * 
+ *
  * @param   array  argv   Array of arguments passed to the script
  * @return  int           0 on success, >1 on error
- */   
+ */
 function Stopp(argv){
     var that = this
-    
+
     // ************** Private methods ************** //
 
     /**
@@ -78,8 +78,8 @@ function Stopp(argv){
 
     /**
      * Write new data to the hosts file. This function is synchronous
-     * 
-     * @param  {array} data 
+     *
+     * @param  {array} data
      * @return {[type]}      [description]
      */
     var writeHostsFileSync = function(data) {
@@ -104,7 +104,7 @@ function Stopp(argv){
 
     /**
      * Parse the system's hosts file for Stopp rules. This function is synchronous
-     * 
+     *
      * @param  {Function} callback  Callback function, params: (error, data)
      * @return {Object}             Object of format {enabled: bool, entries: [{ip: ip, address: address}]}
      */
@@ -114,11 +114,11 @@ function Stopp(argv){
 
         var rawText           = fs_sync.read(conf.hostsLocation)
           // , lines             = rawText.split('\n')
-          , startBannerCount  =  rawText.split(conf.startBanner).length-1//(rawText.match(new RegExp(conf.startBanner), 'gm') || []).length 
+          , startBannerCount  =  rawText.split(conf.startBanner).length-1//(rawText.match(new RegExp(conf.startBanner), 'gm') || []).length
           , endBannerCount    =  rawText.split(conf.endBanner).length-1//(rawText.match(new RegExp(conf.endBanner), 'gm') || []).length
           , bannersPresent    =  startBannerCount === 1 && endBannerCount === 1
           , bannersAbsent     =  startBannerCount + endBannerCount === 0
-          , bannerMismatch    = !(bannersPresent || bannersAbsent) 
+          , bannerMismatch    = !(bannersPresent || bannersAbsent)
 
         if(bannerMismatch) {
             console.log("\nStopp: Error: Hosts file is corrupt: Banner mismatch".red)
@@ -133,7 +133,7 @@ function Stopp(argv){
 
         var startBannerIndex  = rawText.indexOf(conf.startBanner)
           , endBannerIndex    = rawText.indexOf(conf.endBanner)
-        
+
         if(startBannerIndex > endBannerIndex) {
             console.log("\nStopp: Error: Hosts file is corrupt: Banners in wrong order".red)
             console.log("Fix the issue or restore a backup from ".yellow, conf.backupDir.yellow.underline)
@@ -149,7 +149,7 @@ function Stopp(argv){
                           }
                    , entries: []
                    }
-        
+
 
         if(!bannersPresent || !data.raw.body) {
             return data
@@ -160,9 +160,9 @@ function Stopp(argv){
         for(var i = 0; i < rawEntries.length; i++){
 
             var entry = rawEntries[i].replace(/\s+/g, " ").trim() // Get rid of extra whitespace
-            
+
             if(entry === '') continue
-            
+
             if(entry[0] === '#'){
                 entry = entry.slice(1).trim()
             } else {
@@ -172,7 +172,7 @@ function Stopp(argv){
             entry = entry.split(" ") // Split into array on spaces
 
             if(entry.length !== 2) continue // Valid entries should be of length 2
-        
+
             data.entries.push(entry[1]) // Just push the actual address, we don't really care about the IP
 
         }
@@ -186,9 +186,9 @@ function Stopp(argv){
 
 
     if(argv.length > 0 && typeof this[argv[0]] === 'function' && this[argv[0]].callable === true){
-        return this[argv[0]](argv.splice(1))      
+        return this[argv[0]](argv.splice(1))
     } else {
-        if(argv.length > 0) console.log("Stopp: Invalid option: ".red, argv[0].yellow) 
+        if(argv.length > 0) console.log("Stopp: Invalid option: ".red, argv[0].yellow)
         this.help()
     }
 }
@@ -197,21 +197,21 @@ function Stopp(argv){
 
 /**
  * Help Method
- * 
+ *
  * Displays usage information
  */
 Stopp.prototype.help = function() {
     conf.help.forEach(function(text) {
         console.log(text)
     })
-    
+
     return 0
 }
 Stopp.prototype.help.callable = true // Callable from command-line (ex: `stopp help` causes this method to fire)
 
 /**
  * On Method
- * 
+ *
  * Turn filter ON
  *
  */
@@ -241,7 +241,7 @@ Stopp.prototype.on.callable = true
 
 /**
  * Off Method
- * 
+ *
  * Turn filter ON
  *
  */
@@ -269,7 +269,7 @@ Stopp.prototype.off = function() {
 Stopp.prototype.off.callable = true
 
 Stopp.prototype.status = function() {
-    
+
     var rules = this.parseHostsSync()
 
     if(rules.enabled === true){
@@ -281,7 +281,7 @@ Stopp.prototype.status = function() {
 Stopp.prototype.status.callable = true
 
 Stopp.prototype.list = function() {
-    
+
     var rules = this.parseHostsSync()
 
     this.status()
@@ -321,9 +321,9 @@ Stopp.prototype.add = function(domains) {
 
 
     if(success.length > 0){
-        
+
         this.saveHosts(rules)
-        
+
         console.log("\nStopp: Successfully added ".cyan+success.length.toString().green+" of ".cyan+domains.length.toString().yellow+" domain(s) to filter:".cyan)
         for(var i = 0; i < success.length; i++){
             console.log('\t' + success[i].cyan)
@@ -366,9 +366,9 @@ Stopp.prototype.del = function(domains) {
 
 
     if(success.length > 0){
-        
+
         this.saveHosts(rules)
-        
+
         console.log("\nStopp: Successfully removed ".cyan+success.length.toString().green+" of ".cyan+domains.length.toString().yellow+" domain(s) from the filter:".cyan)
         for(var i = 0; i < success.length; i++){
             console.log('\t' + success[i].cyan)
@@ -384,6 +384,7 @@ Stopp.prototype.del = function(domains) {
 
     this.status()
 }
+Stopp.prototype.del.callable = true
 
 /****** Aliases ******/
 
