@@ -49,7 +49,6 @@ var conf    = require("./conf.js")
   , pkg     = require("./package.json")
   , yargs   = require("yargs")
   , fs      = require("fs")
-  , fs_sync = require("fs-sync")
   , colors  = require("colors")
 
 // Don't allow this package to be required
@@ -97,7 +96,7 @@ function Stopp(argv){
             rawData += txt
         }
 
-        fs_sync.write(conf.hostsLocation, data.raw.head + conf.startBanner + '\n' + rawData + conf.endBanner + data.raw.tail)
+        fs.writeFileSync(conf.hostsLocation, data.raw.head + conf.startBanner + '\n' + rawData + conf.endBanner + data.raw.tail)
     }//({enabled: true, entries: ['www.reddit.com', 'np.reddit.com', 'reddit.com'] })
 
     // ************** Priviliged methods ************** //
@@ -112,7 +111,7 @@ function Stopp(argv){
 
 
 
-        var rawText           = fs_sync.read(conf.hostsLocation)
+        var rawText           = fs.readFileSync(conf.hostsLocation, 'utf-8')
           // , lines             = rawText.split('\n')
           , startBannerCount  =  rawText.split(conf.startBanner).length-1//(rawText.match(new RegExp(conf.startBanner), 'gm') || []).length
           , endBannerCount    =  rawText.split(conf.endBanner).length-1//(rawText.match(new RegExp(conf.endBanner), 'gm') || []).length
